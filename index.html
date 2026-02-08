@@ -17,6 +17,7 @@ body {
   justify-content: center;
   font-family: 'Inter', sans-serif;
   overflow: hidden;
+  transition: background 1.2s ease;
 }
 
 /* ================= ENVELOPPE ================= */
@@ -28,17 +29,6 @@ body {
   position: relative;
   cursor: pointer;
   box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-  border: 2px solid #111;
-}
-
-/* Contours intérieurs */
-.envelope::before {
-  content: "";
-  position: absolute;
-  inset: 12px;
-  border: 1px solid #111;
-  border-radius: 14px;
-  pointer-events: none;
 }
 
 /* ================= RABAT ================= */
@@ -50,71 +40,10 @@ body {
   transform-origin: top;
   transition: transform 0.8s ease;
   z-index: 3;
-  border-bottom: 2px solid #111;
 }
-
-/* Traits noirs du triangle */
-.flap::before,
-.flap::after {
-  content: "";
-  position: absolute;
-  width: 2px;
-  height: 100%;
-  background: #111;
-  top: 0;
-}
-
-.flap::before { left: 50%; transform: rotate(-32deg); transform-origin: top; }
-.flap::after  { left: 50%; transform: rotate(32deg);  transform-origin: top; }
 
 .envelope.open .flap {
   transform: rotateX(180deg);
-}
-
-/* ================= NOEUD 🎀 ================= */
-.ribbon-bow {
-  position: absolute;
-  top: 38px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 46px;
-  height: 24px;
-  z-index: 4;
-  animation: bowFloat 3s ease-in-out infinite;
-}
-
-.ribbon-bow::before,
-.ribbon-bow::after {
-  content: "";
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  background: #c1121f;
-  border-radius: 50%;
-}
-
-.ribbon-bow::before { left: 0; }
-.ribbon-bow::after  { right: 0; }
-
-.ribbon-bow span {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #a00;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* légère brillance */
-.ribbon-bow::after {
-  box-shadow: 0 0 8px rgba(255,255,255,0.4);
-}
-
-@keyframes bowFloat {
-  0%,100% { transform: translateX(-50%) translateY(0); }
-  50%     { transform: translateX(-50%) translateY(-4px); }
 }
 
 /* ================= LETTRE ================= */
@@ -139,37 +68,43 @@ body {
   opacity: 1;
 }
 
+/* Battement + vibration */
+.letter.pulse {
+  animation: pulse 0.35s ease-in-out 2;
+}
+@keyframes pulse {
+  0% { transform: translate(-50%, -90%) scale(1); }
+  50% { transform: translate(-50%, -90%) scale(1.04); }
+  100% { transform: translate(-50%, -90%) scale(1); }
+}
+
+/* ================= TEXTE ================= */
+.line {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.line.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .letter h1 {
   font-family: 'Playfair Display', serif;
   font-size: 1.9rem;
   margin-bottom: 14px;
 }
 
-/* ================= TEXTE PROGRESSIF ================= */
-.line {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.line.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 /* ================= ZONE BOUTONS ================= */
 .buttons {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
+  position: relative;
+  width: 100%;
+  height: 110px;
   margin-top: 26px;
   opacity: 0;
   transition: opacity 0.6s ease;
 }
-
-.buttons.show {
-  opacity: 1;
-}
+.buttons.show { opacity: 1; }
 
 button {
   padding: 12px 26px;
@@ -177,23 +112,62 @@ button {
   border: none;
   font-size: 1rem;
   cursor: pointer;
+  position: absolute;
 }
 
 .yes {
   background: #e63946;
   color: white;
+  left: 25%;
+  bottom: 0;
 }
 
 .no {
   background: #e5e7eb;
   color: #374151;
+  left: 65%;
+  bottom: 0;
+}
+
+/* ================= MESSAGE ================= */
+.message {
+  margin-top: 14px;
+  font-style: italic;
+  min-height: 36px;
+}
+
+/* ================= COEUR ================= */
+.heart {
+  position: fixed;
+  font-size: 3rem;
+  opacity: 0;
+  animation: heart 1.2s ease forwards;
+}
+@keyframes heart {
+  0% { transform: scale(0.5); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ================= CONFETTIS ================= */
+.confetti {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: pink;
+  opacity: 0.8;
+  animation: confetti 1.4s ease forwards;
+}
+@keyframes confetti {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(120px); opacity: 0; }
 }
 
 /* ================= FINAL ================= */
 .final {
   display: none;
   text-align: center;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.92);
   padding: 46px;
   border-radius: 28px;
   box-shadow: 0 35px 70px rgba(0,0,0,0.35);
@@ -201,8 +175,12 @@ button {
   transition: opacity 1s ease;
 }
 
-.final.show {
-  opacity: 1;
+.final.show { opacity: 1; }
+
+.final img {
+  margin-top: 20px;
+  max-width: 100%;
+  border-radius: 18px;
 }
 </style>
 </head>
@@ -211,11 +189,10 @@ button {
 
 <div class="envelope" id="envelope">
   <div class="flap"></div>
-  <div class="ribbon-bow"><span></span></div>
 
   <div class="letter" id="letter">
     <h1 class="line">Salut mon petit prince</h1>
-    <p class="line"><strong>Voudrais-tu passer la Saint-Valentin avec moi ?</strong></p>
+    <p class="line"><strong>Voudrais-tu passer la Saint-Valentin avec moi&nbsp;?</strong></p>
 
     <div class="buttons" id="buttons">
       <button class="yes" onclick="accept()">Oui 💖</button>
@@ -227,34 +204,95 @@ button {
 </div>
 
 <div class="final" id="final">
-  <h2>Je savais que tu dirais oui ! ❤️</h2>
+  <h2>Je savais que tu dirais oui !</h2>
   <p>
     Mets-toi sur ton 31, je te prépare une petite surprise<br>
     mais je te laisse planifier la soirée
   </p>
+
+  <img src="https://media.tenor.com/5obTqYtt8.gif" alt="gif romantique">
 </div>
 
 <script>
 const envelope = document.getElementById("envelope");
 const lines = document.querySelectorAll(".line");
 const buttons = document.getElementById("buttons");
+const noBtn = document.getElementById("noBtn");
+const msg = document.getElementById("message");
+const letter = document.getElementById("letter");
+
+const messages = [
+  "s'il te plaît 🥺",
+  "comment ça non ?",
+  "catch me if you can hihi",
+  "tu ne veux vraiment pas le passer avec moi ? :(",
+  "pourtant j'avais une surprise épicée 👀",
+  "je dirais oui à ta place 🤗",
+  "si on en arrive jusque là, c'est que tu veux me rage bait",
+  "je vais te faciliter la tâche"
+];
+
+let attempts = 0;
 
 envelope.addEventListener("click", () => {
   envelope.classList.add("open");
-  lines.forEach((line, i) =>
-    setTimeout(() => line.classList.add("show"), 500 + i * 500)
-  );
-  setTimeout(() => buttons.classList.add("show"), 1800);
+  lines.forEach((l,i)=>setTimeout(()=>l.classList.add("show"),500+i*500));
+  setTimeout(()=>buttons.classList.add("show"),1800);
+});
+
+noBtn.addEventListener("mouseenter", () => {
+  if (attempts >= messages.length - 1) {
+    buttons.innerHTML = `
+      <button class="yes" onclick="accept()" style="left:20%">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left:60%">Oui 💖</button>
+    `;
+    msg.textContent = messages[messages.length - 1];
+    return;
+  }
+
+  msg.textContent = messages[attempts];
+
+  const zone = buttons.getBoundingClientRect();
+  const yes = buttons.querySelector(".yes").getBoundingClientRect();
+
+  let x,y;
+  do {
+    x = Math.random() * (zone.width - noBtn.offsetWidth);
+    y = Math.random() * (zone.height - noBtn.offsetHeight);
+  } while (Math.abs(x - (yes.left - zone.left)) < 70);
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+  attempts++;
 });
 
 function accept() {
-  envelope.style.opacity = "0";
-  setTimeout(() => {
-    envelope.style.display = "none";
-    const final = document.getElementById("final");
-    final.style.display = "block";
-    setTimeout(() => final.classList.add("show"), 50);
-  }, 600);
+  document.body.style.background = "linear-gradient(120deg,#f8cdda,#fbcfe8,#f9a8d4)";
+  letter.classList.add("pulse");
+
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = "❤️";
+  heart.style.left = "50%";
+  heart.style.top = "40%";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),1200);
+
+  for(let i=0;i<10;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=50+Math.random()*100-50+"%";
+    c.style.top="40%";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),1400);
+  }
+
+  setTimeout(()=>{
+    envelope.style.display="none";
+    const final=document.getElementById("final");
+    final.style.display="block";
+    setTimeout(()=>final.classList.add("show"),50);
+  },900);
 }
 </script>
 
