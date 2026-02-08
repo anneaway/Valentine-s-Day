@@ -21,20 +21,31 @@ body {
 
 /* ===== ENVELOPPE ===== */
 .envelope {
-  width: 320px;
-  height: 200px;
+  width: 380px;
+  height: 260px;
   background: #f8fafc;
-  border-radius: 12px;
+  border-radius: 18px;
   position: relative;
   cursor: pointer;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.25);
   transition: transform 0.3s ease;
 }
 
 .envelope:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
 }
 
+/* Partie basse */
+.envelope::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #f8fafc;
+  border-radius: 18px;
+  z-index: 1;
+}
+
+/* Rabat */
 .flap {
   position: absolute;
   width: 100%;
@@ -53,46 +64,51 @@ body {
 /* ===== LETTRE ===== */
 .letter {
   position: absolute;
-  width: 280px;
-  height: auto;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(12px);
-  border-radius: 18px;
-  padding: 28px 24px;
-  top: 40px;
-  left: 20px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-  transform: translateY(80px);
+  width: 320px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(14px);
+  border-radius: 22px;
+  padding: 32px 28px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 40%);
   opacity: 0;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  text-align: center;
   transition: all 1s ease;
+  z-index: 4;
 }
 
 .envelope.open .letter {
-  transform: translateY(-60px);
+  transform: translate(-50%, -80%);
   opacity: 1;
 }
 
 .letter h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
-  margin-bottom: 12px;
+  font-size: 1.8rem;
+  margin-bottom: 14px;
 }
 
+.letter p {
+  font-size: 1.05rem;
+}
+
+/* ===== ZONE DE JEU ===== */
 .buttons {
-  margin-top: 22px;
+  margin-top: 28px;
   position: relative;
-  height: 120px;
+  height: 140px;
 }
 
 button {
-  padding: 10px 24px;
-  border-radius: 28px;
+  padding: 12px 28px;
+  border-radius: 30px;
   border: none;
   font-size: 1rem;
   cursor: pointer;
   position: absolute;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .yes {
@@ -105,31 +121,35 @@ button {
 .no {
   background: #e5e7eb;
   color: #374151;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
+/* Message */
 .message {
-  margin-top: 14px;
+  margin-top: 16px;
   font-style: italic;
-  min-height: 32px;
+  min-height: 36px;
 }
 
 /* ===== FINAL ===== */
 .final {
   display: none;
   text-align: center;
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(16px);
-  padding: 40px;
-  border-radius: 24px;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(18px);
+  padding: 46px;
+  border-radius: 28px;
+  box-shadow: 0 35px 70px rgba(0,0,0,0.35);
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.final.show {
+  opacity: 1;
 }
 
 .final h2 {
   font-family: 'Playfair Display', serif;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 </style>
 </head>
@@ -143,8 +163,8 @@ button {
     <h1>Salut mon petit prince</h1>
     <p><strong>Voudrais-tu passer la Saint-Valentin avec moi ?</strong></p>
 
-    <div class="buttons">
-      <button class="yes" onclick="accept()">Oui ❤️</button>
+    <div class="buttons" id="buttons">
+      <button class="yes" onclick="accept()">Oui 💖</button>
       <button class="no" id="noBtn">Non 🙃</button>
     </div>
 
@@ -167,42 +187,53 @@ envelope.addEventListener("click", () => envelope.classList.add("open"));
 let attempts = 0;
 const messages = [
   "s'il te plaît 🥺",
-  "comment ça non ? 😾",
+  "comment ça non ?",
   "catch me if you can hihi",
   "tu ne veux vraiment pas le passer avec moi ? :(",
   "pourtant j'avais une surprise épicée 👀",
   "je dirais oui à ta place 🤗",
   "si on en arrive jusque là, c'est que tu veux me rage bait",
-  "je vais te faciliter la tâche 🤭"
+  "je vais te faciliter la tâche"
 ];
 
 const noBtn = document.getElementById("noBtn");
 const msg = document.getElementById("message");
+const buttons = document.getElementById("buttons");
 
 noBtn.addEventListener("mouseenter", moveNo);
 
 function moveNo() {
   if (attempts >= messages.length - 1) {
-    noBtn.textContent = "Oui ❤️";
-    noBtn.className = "yes";
-    noBtn.onclick = accept;
+    buttons.innerHTML = `
+      <button class="yes" onclick="accept()" style="left:35%">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left:65%">Oui 💖</button>
+    `;
+    msg.textContent = messages[messages.length - 1];
     return;
   }
 
   msg.textContent = messages[attempts];
-  const range = 20 + attempts * 15;
-  const x = 50 + (Math.random() * range - range / 2);
-  const y = 50 + (Math.random() * range - range / 2);
 
-  noBtn.style.left = `calc(50% + ${x}px)`;
+  const areaWidth = buttons.clientWidth - noBtn.offsetWidth;
+  const areaHeight = buttons.clientHeight - noBtn.offsetHeight;
+
+  const x = Math.random() * areaWidth;
+  const y = Math.random() * areaHeight;
+
+  noBtn.style.left = `${x}px`;
   noBtn.style.top = `${y}px`;
 
   attempts++;
 }
 
 function accept() {
-  document.getElementById("envelope").style.display = "none";
-  document.getElementById("final").style.display = "block";
+  envelope.style.opacity = "0";
+  setTimeout(() => {
+    envelope.style.display = "none";
+    const final = document.getElementById("final");
+    final.style.display = "block";
+    setTimeout(() => final.classList.add("show"), 50);
+  }, 600);
 }
 </script>
 
