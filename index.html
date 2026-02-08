@@ -5,170 +5,205 @@
 <title>Une question 💌</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  --pink: #e63946;
-  --soft: rgba(255,255,255,0.65);
-}
-
-* { box-sizing: border-box; }
-
 body {
   margin: 0;
   height: 100vh;
-  background: linear-gradient(120deg, #fde2e4, #fadadd, #fbcfe8);
-  background-size: 300% 300%;
-  animation: gradient 12s ease infinite;
+  background: linear-gradient(120deg, #fde2e4, #fbcfe8, #f9a8d4);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
+  overflow: hidden;
 }
 
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* ===== ENVELOPPE ===== */
+.envelope {
+  width: 320px;
+  height: 200px;
+  background: #f8fafc;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
 }
 
-.card {
-  width: 420px;
-  padding: 40px 30px;
-  background: var(--soft);
-  backdrop-filter: blur(18px);
-  border-radius: 24px;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+.envelope:hover {
+  transform: translateY(-4px);
+}
+
+.flap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #f1f5f9;
+  clip-path: polygon(0 0, 100% 0, 50% 55%);
+  transform-origin: top;
+  transition: transform 0.8s ease;
+  z-index: 3;
+}
+
+.envelope.open .flap {
+  transform: rotateX(180deg);
+}
+
+/* ===== LETTRE ===== */
+.letter {
+  position: absolute;
+  width: 280px;
+  height: auto;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 28px 24px;
+  top: 40px;
+  left: 20px;
   text-align: center;
-  transform-style: preserve-3d;
-  transition: transform 0.2s ease;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 1s ease;
 }
 
-h1 {
+.envelope.open .letter {
+  transform: translateY(-60px);
+  opacity: 1;
+}
+
+.letter h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.9rem;
-  margin-bottom: 15px;
-}
-
-p {
-  font-size: 1.05rem;
-  line-height: 1.6;
+  font-size: 1.6rem;
+  margin-bottom: 12px;
 }
 
 .buttons {
+  margin-top: 22px;
   position: relative;
   height: 120px;
-  margin-top: 30px;
 }
 
 button {
-  padding: 12px 26px;
-  border-radius: 30px;
+  padding: 10px 24px;
+  border-radius: 28px;
   border: none;
   font-size: 1rem;
   cursor: pointer;
   position: absolute;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .yes {
-  background: var(--pink);
+  background: #e63946;
   color: white;
   left: 50%;
   transform: translateX(-50%);
-  box-shadow: 0 10px 25px rgba(230,57,70,0.4);
-}
-
-.yes:hover {
-  transform: translateX(-50%) scale(1.07);
 }
 
 .no {
-  background: #f3f3f3;
-  color: #555;
-  top: 60px;
+  background: #e5e7eb;
+  color: #374151;
+  top: 50px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .message {
-  margin-top: 25px;
+  margin-top: 14px;
   font-style: italic;
-  min-height: 40px;
+  min-height: 32px;
 }
 
-.result {
+/* ===== FINAL ===== */
+.final {
   display: none;
-  margin-top: 25px;
-  font-size: 1.1rem;
+  text-align: center;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(16px);
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+}
+
+.final h2 {
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 12px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card" id="card">
-  <h1>Hey toi 🤍</h1>
+<div class="envelope" id="envelope">
+  <div class="flap"></div>
 
-  <p>J’ai une question.<br>
-  Elle est simple, mais sincère.</p>
+  <div class="letter" id="letter">
+    <h1>Salut mon petit prince</h1>
+    <p><strong>Voudrais-tu passer la Saint-Valentin avec moi ?</strong></p>
 
-  <p><strong>Est-ce que tu veux passer la Saint-Valentin avec moi ?</strong></p>
+    <div class="buttons">
+      <button class="yes" onclick="accept()">Oui ❤️</button>
+      <button class="no" id="noBtn">Non 🙃</button>
+    </div>
 
-  <div class="buttons">
-    <button class="yes" onclick="accept()">Oui 💖</button>
-    <button class="no" id="noBtn">Non 🙃</button>
-  </div>
-
-  <div class="message" id="message"></div>
-
-  <div class="result" id="result">
-    <p>Je savais que tu dirais oui 😌<br>
-    Sushi, rires… et nous.</p>
+    <div class="message" id="message"></div>
   </div>
 </div>
 
-<script>
-let attempts = 0;
+<div class="final" id="final">
+  <h2>Je savais que tu dirais oui !</h2>
+  <p>
+    Mets-toi sur ton 31, je te prépare une petite surprise<br>
+    mais je te laisse planifier la soirée
+  </p>
+</div>
 
+<script>
+const envelope = document.getElementById("envelope");
+envelope.addEventListener("click", () => envelope.classList.add("open"));
+
+let attempts = 0;
 const messages = [
-  "Hmm… vraiment ?",
-  "Tu es sûr de toi ? 😏",
-  "On sait tous les deux que non.",
-  "Tu peux arrêter d’essayer maintenant.",
-  "Bon… je vais te faciliter la vie 💖"
+  "s'il te plaît 🥺",
+  "comment ça non ? 😾",
+  "catch me if you can hihi",
+  "tu ne veux vraiment pas le passer avec moi ? :(",
+  "pourtant j'avais une surprise épicée 👀",
+  "je dirais oui à ta place 🤗",
+  "si on en arrive jusque là, c'est que tu veux me rage bait",
+  "je vais te faciliter la tâche 🤭"
 ];
 
 const noBtn = document.getElementById("noBtn");
-const message = document.getElementById("message");
+const msg = document.getElementById("message");
 
-function moveButton() {
-  attempts++;
-  message.textContent = messages[Math.min(attempts - 1, messages.length - 1)];
+noBtn.addEventListener("mouseenter", moveNo);
 
-  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+function moveNo() {
+  if (attempts >= messages.length - 1) {
+    noBtn.textContent = "Oui ❤️";
+    noBtn.className = "yes";
+    noBtn.onclick = accept;
+    return;
+  }
 
-  noBtn.style.left = `${x}px`;
+  msg.textContent = messages[attempts];
+  const range = 20 + attempts * 15;
+  const x = 50 + (Math.random() * range - range / 2);
+  const y = 50 + (Math.random() * range - range / 2);
+
+  noBtn.style.left = `calc(50% + ${x}px)`;
   noBtn.style.top = `${y}px`;
-}
 
-noBtn.addEventListener("mouseenter", moveButton);
-noBtn.addEventListener("touchstart", moveButton);
+  attempts++;
+}
 
 function accept() {
-  document.getElementById("result").style.display = "block";
+  document.getElementById("envelope").style.display = "none";
+  document.getElementById("final").style.display = "block";
 }
-
-// Effet 3D carte
-const card = document.getElementById("card");
-document.addEventListener("mousemove", e => {
-  const x = (window.innerWidth / 2 - e.clientX) / 40;
-  const y = (window.innerHeight / 2 - e.clientY) / 40;
-  card.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
-});
 </script>
 
 </body>
