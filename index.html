@@ -21,8 +21,8 @@ body {
 
 /* ================= ENVELOPPE ================= */
 .envelope {
-  width: 400px;
-  height: 270px;
+  width: 420px;
+  height: 280px;
   background: #f8fafc;
   border-radius: 18px;
   position: relative;
@@ -31,26 +31,14 @@ body {
   border: 2px solid #111;
 }
 
-/* Contours style papier */
-.envelope::before,
-.envelope::after {
+/* Contours intérieurs */
+.envelope::before {
   content: "";
   position: absolute;
-  inset: 10px;
+  inset: 12px;
   border: 1px solid #111;
   border-radius: 14px;
   pointer-events: none;
-}
-
-/* Ruban vertical enveloppe */
-.ribbon-envelope {
-  position: absolute;
-  width: 42px;
-  height: 100%;
-  background: #c1121f;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
 }
 
 /* ================= RABAT ================= */
@@ -58,62 +46,45 @@ body {
   position: absolute;
   inset: 0;
   background: #f1f5f9;
-  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  clip-path: polygon(0 0, 100% 0, 50% 62%);
   transform-origin: top;
   transition: transform 0.8s ease;
-  z-index: 4;
+  z-index: 3;
   border-bottom: 2px solid #111;
 }
+
+/* Traits noirs du triangle */
+.flap::before,
+.flap::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: #111;
+  top: 0;
+}
+
+.flap::before { left: 50%; transform: rotate(-32deg); transform-origin: top; }
+.flap::after  { left: 50%; transform: rotate(32deg);  transform-origin: top; }
 
 .envelope.open .flap {
   transform: rotateX(180deg);
 }
 
-/* Ruban sur le rabat */
-.flap::after {
-  content: "";
+/* ================= NOEUD 🎀 ================= */
+.ribbon-bow {
   position: absolute;
-  width: 42px;
-  height: 100%;
-  background: #c1121f;
+  top: 38px;
   left: 50%;
   transform: translateX(-50%);
+  width: 46px;
+  height: 24px;
+  z-index: 4;
+  animation: bowFloat 3s ease-in-out infinite;
 }
 
-/* ================= LETTRE ================= */
-.letter {
-  position: absolute;
-  width: 330px;
-  background: #fff;
-  border-radius: 22px;
-  padding: 36px 28px 40px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, 40%);
-  opacity: 0;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-  text-align: center;
-  transition: all 1s ease;
-  z-index: 6;
-}
-
-.envelope.open .letter {
-  transform: translate(-50%, -85%);
-  opacity: 1;
-}
-
-/* Nœud sur la lettre */
-.bow {
-  position: absolute;
-  top: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 44px;
-  height: 22px;
-}
-
-.bow::before,
-.bow::after {
+.ribbon-bow::before,
+.ribbon-bow::after {
   content: "";
   position: absolute;
   width: 22px;
@@ -122,38 +93,82 @@ body {
   border-radius: 50%;
 }
 
-.bow::before {
-  left: 0;
-}
+.ribbon-bow::before { left: 0; }
+.ribbon-bow::after  { right: 0; }
 
-.bow::after {
-  right: 0;
-}
-
-.bow span {
+.ribbon-bow span {
   position: absolute;
   width: 10px;
   height: 10px;
   background: #a00;
   border-radius: 50%;
-  left: 50%;
   top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
 }
 
-/* ================= TEXTE ================= */
+/* légère brillance */
+.ribbon-bow::after {
+  box-shadow: 0 0 8px rgba(255,255,255,0.4);
+}
+
+@keyframes bowFloat {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%     { transform: translateX(-50%) translateY(-4px); }
+}
+
+/* ================= LETTRE ================= */
+.letter {
+  position: absolute;
+  width: 340px;
+  background: #fff;
+  border-radius: 22px;
+  padding: 40px 28px 36px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 40%);
+  opacity: 0;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  text-align: center;
+  transition: all 1s ease;
+  z-index: 5;
+}
+
+.envelope.open .letter {
+  transform: translate(-50%, -90%);
+  opacity: 1;
+}
+
 .letter h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.85rem;
+  font-size: 1.9rem;
   margin-bottom: 14px;
 }
 
-/* ================= ZONE DE JEU ================= */
+/* ================= TEXTE PROGRESSIF ================= */
+.line {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.line.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================= ZONE BOUTONS ================= */
 .buttons {
-  position: relative;
-  width: 100%;
-  height: 110px;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
   margin-top: 26px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.buttons.show {
+  opacity: 1;
 }
 
 button {
@@ -162,33 +177,16 @@ button {
   border: none;
   font-size: 1rem;
   cursor: pointer;
-  position: absolute;
-  transition:
-    left 0.35s ease,
-    top 0.35s ease,
-    transform 0.2s ease;
 }
 
-/* Positions initiales FIXES */
 .yes {
   background: #e63946;
   color: white;
-  left: 25%;
-  bottom: 0;
 }
 
 .no {
   background: #e5e7eb;
   color: #374151;
-  left: 65%;
-  bottom: 0;
-}
-
-/* Message */
-.message {
-  margin-top: 14px;
-  font-style: italic;
-  min-height: 36px;
 }
 
 /* ================= FINAL ================= */
@@ -212,14 +210,12 @@ button {
 <body>
 
 <div class="envelope" id="envelope">
-  <div class="ribbon-envelope"></div>
   <div class="flap"></div>
+  <div class="ribbon-bow"><span></span></div>
 
-  <div class="letter">
-    <div class="bow"><span></span></div>
-
-    <h1>Salut mon petit prince</h1>
-    <p><strong>Voudrais-tu passer la Saint-Valentin avec moi ?</strong></p>
+  <div class="letter" id="letter">
+    <h1 class="line">Salut mon petit prince</h1>
+    <p class="line"><strong>Voudrais-tu passer la Saint-Valentin avec moi ?</strong></p>
 
     <div class="buttons" id="buttons">
       <button class="yes" onclick="accept()">Oui 💖</button>
@@ -231,7 +227,7 @@ button {
 </div>
 
 <div class="final" id="final">
-  <h2>Je savais que tu dirais oui !</h2>
+  <h2>Je savais que tu dirais oui ! ❤️</h2>
   <p>
     Mets-toi sur ton 31, je te prépare une petite surprise<br>
     mais je te laisse planifier la soirée
@@ -240,58 +236,15 @@ button {
 
 <script>
 const envelope = document.getElementById("envelope");
-envelope.addEventListener("click", () => envelope.classList.add("open"));
-
-const messages = [
-  "s'il te plaît 🥺",
-  "comment ça non ?",
-  "catch me if you can hihi",
-  "tu ne veux vraiment pas le passer avec moi ? :(",
-  "pourtant j'avais une surprise épicée 👀",
-  "je dirais oui à ta place 🤗",
-  "si on en arrive jusque là, c'est que tu veux me rage bait",
-  "je vais te faciliter la tâche"
-];
-
-let attempts = 0;
-const noBtn = document.getElementById("noBtn");
-const msg = document.getElementById("message");
+const lines = document.querySelectorAll(".line");
 const buttons = document.getElementById("buttons");
-const yesBtn = buttons.querySelector(".yes");
 
-noBtn.addEventListener("mouseenter", () => {
-  if (attempts >= messages.length - 1) {
-    buttons.innerHTML = `
-      <button class="yes" onclick="accept()" style="left:20%">Oui 💖</button>
-      <button class="yes" onclick="accept()" style="left:60%">Oui 💖</button>
-    `;
-    msg.textContent = messages[messages.length - 1];
-    return;
-  }
-
-  msg.textContent = messages[attempts];
-
-  const padding = 10;
-  const zone = {
-    xMin: padding,
-    xMax: buttons.clientWidth - noBtn.offsetWidth - padding,
-    yMin: 0,
-    yMax: buttons.clientHeight - noBtn.offsetHeight
-  };
-
-  let x, y;
-  do {
-    x = Math.random() * (zone.xMax - zone.xMin) + zone.xMin;
-    y = Math.random() * (zone.yMax - zone.yMin) + zone.yMin;
-  } while (
-    Math.abs(x - yesBtn.offsetLeft) < 60 &&
-    Math.abs(y - yesBtn.offsetTop) < 40
+envelope.addEventListener("click", () => {
+  envelope.classList.add("open");
+  lines.forEach((line, i) =>
+    setTimeout(() => line.classList.add("show"), 500 + i * 500)
   );
-
-  noBtn.style.left = `${x}px`;
-  noBtn.style.top = `${y}px`;
-
-  attempts++;
+  setTimeout(() => buttons.classList.add("show"), 1800);
 });
 
 function accept() {
