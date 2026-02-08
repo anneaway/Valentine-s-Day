@@ -28,24 +28,8 @@ body {
   position: relative;
   cursor: pointer;
   box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-  transition: transform 0.3s ease;
 }
 
-.envelope:hover {
-  transform: translateY(-6px);
-}
-
-/* Partie basse */
-.envelope::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: #f8fafc;
-  border-radius: 18px;
-  z-index: 1;
-}
-
-/* Rabat */
 .flap {
   position: absolute;
   width: 100%;
@@ -65,10 +49,9 @@ body {
 .letter {
   position: absolute;
   width: 320px;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(14px);
+  background: rgba(255,255,255,0.95);
   border-radius: 22px;
-  padding: 32px 28px;
+  padding: 32px 28px 36px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, 40%);
@@ -90,37 +73,43 @@ body {
   margin-bottom: 14px;
 }
 
-.letter p {
-  font-size: 1.05rem;
-}
-
-/* ===== ZONE DE JEU ===== */
+/* ===== ZONE DES BOUTONS ===== */
 .buttons {
-  margin-top: 28px;
   position: relative;
-  height: 140px;
+  width: 100%;
+  height: 90px;
+  margin-top: 28px;
 }
 
 button {
-  padding: 12px 28px;
+  padding: 12px 26px;
   border-radius: 30px;
   border: none;
   font-size: 1rem;
   cursor: pointer;
   position: absolute;
-  transition: all 0.25s ease;
+  transition:
+    left 0.35s ease,
+    top 0.35s ease,
+    transform 0.2s ease;
 }
 
+/* Bouton Oui */
 .yes {
   background: #e63946;
   color: white;
   left: 50%;
-  transform: translateX(-50%);
+  bottom: 0;
+  transform: translateX(-70px);
 }
 
+/* Bouton Non */
 .no {
   background: #e5e7eb;
   color: #374151;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(20px);
 }
 
 /* Message */
@@ -134,8 +123,7 @@ button {
 .final {
   display: none;
   text-align: center;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(18px);
+  background: rgba(255,255,255,0.9);
   padding: 46px;
   border-radius: 28px;
   box-shadow: 0 35px 70px rgba(0,0,0,0.35);
@@ -146,11 +134,6 @@ button {
 .final.show {
   opacity: 1;
 }
-
-.final h2 {
-  font-family: 'Playfair Display', serif;
-  margin-bottom: 14px;
-}
 </style>
 </head>
 
@@ -159,7 +142,7 @@ button {
 <div class="envelope" id="envelope">
   <div class="flap"></div>
 
-  <div class="letter" id="letter">
+  <div class="letter">
     <h1>Salut mon petit prince</h1>
     <p><strong>Voudrais-tu passer la Saint-Valentin avec moi ?</strong></p>
 
@@ -184,7 +167,6 @@ button {
 const envelope = document.getElementById("envelope");
 envelope.addEventListener("click", () => envelope.classList.add("open"));
 
-let attempts = 0;
 const messages = [
   "s'il te plaît 🥺",
   "comment ça non ?",
@@ -196,17 +178,16 @@ const messages = [
   "je vais te faciliter la tâche"
 ];
 
+let attempts = 0;
 const noBtn = document.getElementById("noBtn");
 const msg = document.getElementById("message");
 const buttons = document.getElementById("buttons");
 
-noBtn.addEventListener("mouseenter", moveNo);
-
-function moveNo() {
+noBtn.addEventListener("mouseenter", () => {
   if (attempts >= messages.length - 1) {
     buttons.innerHTML = `
-      <button class="yes" onclick="accept()" style="left:35%">Oui 💖</button>
-      <button class="yes" onclick="accept()" style="left:65%">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left:50%;transform:translateX(-110px)">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left:50%;transform:translateX(10px)">Oui 💖</button>
     `;
     msg.textContent = messages[messages.length - 1];
     return;
@@ -214,17 +195,14 @@ function moveNo() {
 
   msg.textContent = messages[attempts];
 
-  const areaWidth = buttons.clientWidth - noBtn.offsetWidth;
-  const areaHeight = buttons.clientHeight - noBtn.offsetHeight;
-
-  const x = Math.random() * areaWidth;
-  const y = Math.random() * areaHeight;
+  const maxX = buttons.clientWidth - noBtn.offsetWidth;
+  const x = Math.random() * maxX;
 
   noBtn.style.left = `${x}px`;
-  noBtn.style.top = `${y}px`;
+  noBtn.style.bottom = "0";
 
   attempts++;
-}
+});
 
 function accept() {
   envelope.style.opacity = "0";
