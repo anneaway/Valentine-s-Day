@@ -111,18 +111,29 @@ button {
 
 /* positions initiales centrées */
 .yes {
-  background:#e63946;
-  color:#fff;
-  left:50%;
-  bottom:0;
-  transform: translateX(-110px);
+  background: #e63946;
+  color: white;
+  position: absolute;
+
+  /* même taille que Non */
+  width: 110px;
+  height: 44px;
+
+  left: calc(50% - 120px);
+  bottom: 0;
 }
 .no {
-  background:#e5e7eb;
-  color:#374151;
-  left:50%;
-  bottom:0;
-  transform: translateX(10px);
+  background: #e5e7eb;
+  color: #374151;
+  position: absolute;
+
+  /* taille figée (IMPORTANT) */
+  width: 110px;
+  height: 44px;
+
+  /* position initiale */
+  left: calc(50% + 20px);
+  bottom: 0;
 }
 
 /* message */
@@ -205,7 +216,7 @@ button {
   </p>
 
   <!-- GIF TENOR (LIEN MEDIA DIRECT) -->
-  <img src="https://media.tenor.com/5obTqYtt8AAAAC/love-couple.gif" alt="gif romantique">
+  <img src="./love.gif" alt="gif romantique">
 </div>
 
 <script>
@@ -238,8 +249,8 @@ envelope.addEventListener("click", () => {
 noBtn.addEventListener("mouseenter", () => {
   if (attempts >= messages.length - 1) {
     buttons.innerHTML = `
-      <button class="yes" onclick="accept()" style="left:50%;transform:translateX(-110px)">Oui 💖</button>
-      <button class="yes" onclick="accept()" style="left:50%;transform:translateX(10px)">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left: calc(50% - 120px); bottom:0;">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left: calc(50% + 20px); bottom:0;">Oui 💖</button>  
     `;
     msg.textContent = messages[messages.length - 1];
     return;
