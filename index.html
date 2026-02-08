@@ -19,39 +19,74 @@ body {
   overflow: hidden;
 }
 
-/* ===== ENVELOPPE ===== */
+/* ================= ENVELOPPE ================= */
 .envelope {
-  width: 380px;
-  height: 260px;
+  width: 400px;
+  height: 270px;
   background: #f8fafc;
   border-radius: 18px;
   position: relative;
   cursor: pointer;
   box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+  border: 2px solid #111;
 }
 
+/* Contours style papier */
+.envelope::before,
+.envelope::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid #111;
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+/* Ruban vertical enveloppe */
+.ribbon-envelope {
+  position: absolute;
+  width: 42px;
+  height: 100%;
+  background: #c1121f;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+/* ================= RABAT ================= */
 .flap {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: #f1f5f9;
-  clip-path: polygon(0 0, 100% 0, 50% 55%);
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
   transform-origin: top;
   transition: transform 0.8s ease;
-  z-index: 3;
+  z-index: 4;
+  border-bottom: 2px solid #111;
 }
 
 .envelope.open .flap {
   transform: rotateX(180deg);
 }
 
-/* ===== LETTRE ===== */
+/* Ruban sur le rabat */
+.flap::after {
+  content: "";
+  position: absolute;
+  width: 42px;
+  height: 100%;
+  background: #c1121f;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ================= LETTRE ================= */
 .letter {
   position: absolute;
-  width: 320px;
-  background: rgba(255,255,255,0.95);
+  width: 330px;
+  background: #fff;
   border-radius: 22px;
-  padding: 32px 28px 36px;
+  padding: 36px 28px 40px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, 40%);
@@ -59,26 +94,66 @@ body {
   box-shadow: 0 25px 50px rgba(0,0,0,0.3);
   text-align: center;
   transition: all 1s ease;
-  z-index: 4;
+  z-index: 6;
 }
 
 .envelope.open .letter {
-  transform: translate(-50%, -80%);
+  transform: translate(-50%, -85%);
   opacity: 1;
 }
 
+/* Nœud sur la lettre */
+.bow {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 22px;
+}
+
+.bow::before,
+.bow::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: #c1121f;
+  border-radius: 50%;
+}
+
+.bow::before {
+  left: 0;
+}
+
+.bow::after {
+  right: 0;
+}
+
+.bow span {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #a00;
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ================= TEXTE ================= */
 .letter h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
+  font-size: 1.85rem;
   margin-bottom: 14px;
 }
 
-/* ===== ZONE DES BOUTONS ===== */
+/* ================= ZONE DE JEU ================= */
 .buttons {
   position: relative;
   width: 100%;
-  height: 90px;
-  margin-top: 28px;
+  height: 110px;
+  margin-top: 26px;
 }
 
 button {
@@ -94,32 +169,29 @@ button {
     transform 0.2s ease;
 }
 
-/* Bouton Oui */
+/* Positions initiales FIXES */
 .yes {
   background: #e63946;
   color: white;
-  left: 50%;
+  left: 25%;
   bottom: 0;
-  transform: translateX(-70px);
 }
 
-/* Bouton Non */
 .no {
   background: #e5e7eb;
   color: #374151;
-  left: 50%;
+  left: 65%;
   bottom: 0;
-  transform: translateX(20px);
 }
 
 /* Message */
 .message {
-  margin-top: 16px;
+  margin-top: 14px;
   font-style: italic;
   min-height: 36px;
 }
 
-/* ===== FINAL ===== */
+/* ================= FINAL ================= */
 .final {
   display: none;
   text-align: center;
@@ -140,9 +212,12 @@ button {
 <body>
 
 <div class="envelope" id="envelope">
+  <div class="ribbon-envelope"></div>
   <div class="flap"></div>
 
   <div class="letter">
+    <div class="bow"><span></span></div>
+
     <h1>Salut mon petit prince</h1>
     <p><strong>Voudrais-tu passer la Saint-Valentin avec moi ?</strong></p>
 
@@ -182,12 +257,13 @@ let attempts = 0;
 const noBtn = document.getElementById("noBtn");
 const msg = document.getElementById("message");
 const buttons = document.getElementById("buttons");
+const yesBtn = buttons.querySelector(".yes");
 
 noBtn.addEventListener("mouseenter", () => {
   if (attempts >= messages.length - 1) {
     buttons.innerHTML = `
-      <button class="yes" onclick="accept()" style="left:50%;transform:translateX(-110px)">Oui 💖</button>
-      <button class="yes" onclick="accept()" style="left:50%;transform:translateX(10px)">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left:20%">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left:60%">Oui 💖</button>
     `;
     msg.textContent = messages[messages.length - 1];
     return;
@@ -195,11 +271,25 @@ noBtn.addEventListener("mouseenter", () => {
 
   msg.textContent = messages[attempts];
 
-  const maxX = buttons.clientWidth - noBtn.offsetWidth;
-  const x = Math.random() * maxX;
+  const padding = 10;
+  const zone = {
+    xMin: padding,
+    xMax: buttons.clientWidth - noBtn.offsetWidth - padding,
+    yMin: 0,
+    yMax: buttons.clientHeight - noBtn.offsetHeight
+  };
+
+  let x, y;
+  do {
+    x = Math.random() * (zone.xMax - zone.xMin) + zone.xMin;
+    y = Math.random() * (zone.yMax - zone.yMin) + zone.yMin;
+  } while (
+    Math.abs(x - yesBtn.offsetLeft) < 60 &&
+    Math.abs(y - yesBtn.offsetTop) < 40
+  );
 
   noBtn.style.left = `${x}px`;
-  noBtn.style.bottom = "0";
+  noBtn.style.top = `${y}px`;
 
   attempts++;
 });
