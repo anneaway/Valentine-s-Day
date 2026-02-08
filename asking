@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Une question 💌</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --pink: #e63946;
+  --soft: rgba(255,255,255,0.65);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(120deg, #fde2e4, #fadadd, #fbcfe8);
+  background-size: 300% 300%;
+  animation: gradient 12s ease infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.card {
+  width: 420px;
+  padding: 40px 30px;
+  background: var(--soft);
+  backdrop-filter: blur(18px);
+  border-radius: 24px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+  text-align: center;
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.9rem;
+  margin-bottom: 15px;
+}
+
+p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.buttons {
+  position: relative;
+  height: 120px;
+  margin-top: 30px;
+}
+
+button {
+  padding: 12px 26px;
+  border-radius: 30px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  position: absolute;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.yes {
+  background: var(--pink);
+  color: white;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 10px 25px rgba(230,57,70,0.4);
+}
+
+.yes:hover {
+  transform: translateX(-50%) scale(1.07);
+}
+
+.no {
+  background: #f3f3f3;
+  color: #555;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.message {
+  margin-top: 25px;
+  font-style: italic;
+  min-height: 40px;
+}
+
+.result {
+  display: none;
+  margin-top: 25px;
+  font-size: 1.1rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card">
+  <h1>Hey toi 🤍</h1>
+
+  <p>J’ai une question.<br>
+  Elle est simple, mais sincère.</p>
+
+  <p><strong>Est-ce que tu veux passer la Saint-Valentin avec moi ?</strong></p>
+
+  <div class="buttons">
+    <button class="yes" onclick="accept()">Oui 💖</button>
+    <button class="no" id="noBtn">Non 🙃</button>
+  </div>
+
+  <div class="message" id="message"></div>
+
+  <div class="result" id="result">
+    <p>Je savais que tu dirais oui 😌<br>
+    Sushi, rires… et nous.</p>
+  </div>
+</div>
+
+<script>
+let attempts = 0;
+
+const messages = [
+  "Hmm… vraiment ?",
+  "Tu es sûr de toi ? 😏",
+  "On sait tous les deux que non.",
+  "Tu peux arrêter d’essayer maintenant.",
+  "Bon… je vais te faciliter la vie 💖"
+];
+
+const noBtn = document.getElementById("noBtn");
+const message = document.getElementById("message");
+
+function moveButton() {
+  attempts++;
+  message.textContent = messages[Math.min(attempts - 1, messages.length - 1)];
+
+  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+
+  noBtn.style.left = `${x}px`;
+  noBtn.style.top = `${y}px`;
+}
+
+noBtn.addEventListener("mouseenter", moveButton);
+noBtn.addEventListener("touchstart", moveButton);
+
+function accept() {
+  document.getElementById("result").style.display = "block";
+}
+
+// Effet 3D carte
+const card = document.getElementById("card");
+document.addEventListener("mousemove", e => {
+  const x = (window.innerWidth / 2 - e.clientX) / 40;
+  const y = (window.innerHeight / 2 - e.clientY) / 40;
+  card.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+});
+</script>
+
+</body>
+</html>
