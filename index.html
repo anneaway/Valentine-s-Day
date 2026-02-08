@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Une question 💌</title>
+<title>Pour toi 💌</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -11,16 +11,16 @@
 body {
   margin: 0;
   height: 100vh;
-  background: linear-gradient(120deg, #fde2e4, #fbcfe8, #f9a8d4);
+  background: linear-gradient(120deg,#fde2e4,#fbcfe8,#f9a8d4);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
   overflow: hidden;
-  transition: background 1.2s ease;
+  transition: background 1s ease;
 }
 
-/* ================= ENVELOPPE ================= */
+/* ========== ENVELOPPE ========== */
 .envelope {
   width: 420px;
   height: 280px;
@@ -31,22 +31,18 @@ body {
   box-shadow: 0 30px 60px rgba(0,0,0,0.25);
 }
 
-/* ================= RABAT ================= */
 .flap {
   position: absolute;
   inset: 0;
   background: #f1f5f9;
-  clip-path: polygon(0 0, 100% 0, 50% 62%);
+  clip-path: polygon(0 0,100% 0,50% 62%);
   transform-origin: top;
-  transition: transform 0.8s ease;
+  transition: transform .8s ease;
   z-index: 3;
 }
+.envelope.open .flap { transform: rotateX(180deg); }
 
-.envelope.open .flap {
-  transform: rotateX(180deg);
-}
-
-/* ================= LETTRE ================= */
+/* ========== LETTRE ========== */
 .letter {
   position: absolute;
   width: 340px;
@@ -55,54 +51,52 @@ body {
   padding: 40px 28px 36px;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, 40%);
+  transform: translate(-50%,40%);
   opacity: 0;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  box-shadow: 0 25px 50px rgba(0,0,0,.3);
   text-align: center;
   transition: all 1s ease;
   z-index: 5;
 }
-
 .envelope.open .letter {
-  transform: translate(-50%, -90%);
+  transform: translate(-50%,-90%);
   opacity: 1;
 }
 
-/* Battement + vibration */
+/* pulse */
 .letter.pulse {
-  animation: pulse 0.35s ease-in-out 2;
+  animation: pulse .35s ease-in-out 2;
 }
 @keyframes pulse {
-  0% { transform: translate(-50%, -90%) scale(1); }
-  50% { transform: translate(-50%, -90%) scale(1.04); }
-  100% { transform: translate(-50%, -90%) scale(1); }
+  0% { transform: translate(-50%,-90%) scale(1); }
+  50% { transform: translate(-50%,-90%) scale(1.04); }
+  100% { transform: translate(-50%,-90%) scale(1); }
 }
 
-/* ================= TEXTE ================= */
+/* ========== TEXTE ========== */
 .line {
   opacity: 0;
   transform: translateY(6px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity .6s ease, transform .6s ease;
 }
 .line.show {
   opacity: 1;
   transform: translateY(0);
 }
-
 .letter h1 {
   font-family: 'Playfair Display', serif;
   font-size: 1.9rem;
   margin-bottom: 14px;
 }
 
-/* ================= ZONE BOUTONS ================= */
+/* ========== BOUTONS ========== */
 .buttons {
   position: relative;
   width: 100%;
   height: 110px;
   margin-top: 26px;
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: opacity .6s ease;
 }
 .buttons.show { opacity: 1; }
 
@@ -115,28 +109,30 @@ button {
   position: absolute;
 }
 
+/* positions initiales centrées */
 .yes {
-  background: #e63946;
-  color: white;
-  left: 25%;
-  bottom: 0;
+  background:#e63946;
+  color:#fff;
+  left:50%;
+  bottom:0;
+  transform: translateX(-110px);
 }
-
 .no {
-  background: #e5e7eb;
-  color: #374151;
-  left: 65%;
-  bottom: 0;
+  background:#e5e7eb;
+  color:#374151;
+  left:50%;
+  bottom:0;
+  transform: translateX(10px);
 }
 
-/* ================= MESSAGE ================= */
+/* message */
 .message {
   margin-top: 14px;
   font-style: italic;
   min-height: 36px;
 }
 
-/* ================= COEUR ================= */
+/* ========== COEUR ========== */
 .heart {
   position: fixed;
   font-size: 3rem;
@@ -144,39 +140,37 @@ button {
   animation: heart 1.2s ease forwards;
 }
 @keyframes heart {
-  0% { transform: scale(0.5); opacity: 0; }
-  30% { opacity: 1; }
-  100% { transform: scale(1.8); opacity: 0; }
+  0% { transform: scale(.5); opacity:0; }
+  30% { opacity:1; }
+  100% { transform: scale(1.8); opacity:0; }
 }
 
-/* ================= CONFETTIS ================= */
+/* ========== CONFETTIS ========== */
 .confetti {
   position: fixed;
   width: 6px;
   height: 6px;
   background: pink;
-  opacity: 0.8;
+  opacity: .8;
   animation: confetti 1.4s ease forwards;
 }
 @keyframes confetti {
-  0% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(120px); opacity: 0; }
+  0% { transform: translateY(0); opacity:1; }
+  100% { transform: translateY(120px); opacity:0; }
 }
 
-/* ================= FINAL ================= */
+/* ========== FINAL ========== */
 .final {
   display: none;
   text-align: center;
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,.92);
   padding: 46px;
   border-radius: 28px;
-  box-shadow: 0 35px 70px rgba(0,0,0,0.35);
+  box-shadow: 0 35px 70px rgba(0,0,0,.35);
   opacity: 0;
   transition: opacity 1s ease;
 }
-
 .final.show { opacity: 1; }
-
 .final img {
   margin-top: 20px;
   max-width: 100%;
@@ -210,7 +204,8 @@ button {
     mais je te laisse planifier la soirée
   </p>
 
-  <img src="https://media.tenor.com/5obTqYtt8.gif" alt="gif romantique">
+  <!-- GIF TENOR (LIEN MEDIA DIRECT) -->
+  <img src="https://media.tenor.com/5obTqYtt8AAAAC/love-couple.gif" alt="gif romantique">
 </div>
 
 <script>
@@ -223,9 +218,9 @@ const letter = document.getElementById("letter");
 
 const messages = [
   "s'il te plaît 🥺",
-  "comment ça non ?",
+  "comment ça non ? 😾",
   "catch me if you can hihi",
-  "tu ne veux vraiment pas le passer avec moi ? :(",
+  "tu ne veux vraiment pas le passer avec moi ? 😣",
   "pourtant j'avais une surprise épicée 👀",
   "je dirais oui à ta place 🤗",
   "si on en arrive jusque là, c'est que tu veux me rage bait",
@@ -243,8 +238,8 @@ envelope.addEventListener("click", () => {
 noBtn.addEventListener("mouseenter", () => {
   if (attempts >= messages.length - 1) {
     buttons.innerHTML = `
-      <button class="yes" onclick="accept()" style="left:20%">Oui 💖</button>
-      <button class="yes" onclick="accept()" style="left:60%">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left:50%;transform:translateX(-110px)">Oui 💖</button>
+      <button class="yes" onclick="accept()" style="left:50%;transform:translateX(10px)">Oui 💖</button>
     `;
     msg.textContent = messages[messages.length - 1];
     return;
@@ -259,22 +254,23 @@ noBtn.addEventListener("mouseenter", () => {
   do {
     x = Math.random() * (zone.width - noBtn.offsetWidth);
     y = Math.random() * (zone.height - noBtn.offsetHeight);
-  } while (Math.abs(x - (yes.left - zone.left)) < 70);
+  } while (Math.abs(x - (yes.left-zone.left)) < 80);
 
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
+  noBtn.style.left = x+"px";
+  noBtn.style.top = y+"px";
   attempts++;
 });
 
 function accept() {
-  document.body.style.background = "linear-gradient(120deg,#f8cdda,#fbcfe8,#f9a8d4)";
+  document.body.style.background =
+    "linear-gradient(120deg,#f8cdda,#fbcfe8,#f9a8d4)";
   letter.classList.add("pulse");
 
   const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.textContent = "❤️";
-  heart.style.left = "50%";
-  heart.style.top = "40%";
+  heart.className="heart";
+  heart.textContent="❤️";
+  heart.style.left="50%";
+  heart.style.top="40%";
   document.body.appendChild(heart);
   setTimeout(()=>heart.remove(),1200);
 
